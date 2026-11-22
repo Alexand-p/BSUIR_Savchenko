@@ -1,11 +1,13 @@
 using BSUIR_Savchenko.UI.Models;
 using BSUIR_Savchenko.UI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BSUIR_Savchenko.UI.Areas.Admin.Pages;
 
+[Authorize(Roles = "POWER-USER")]
 public class CreateModel(IProductService products, ICategoryService categories) : PageModel
 {
     [BindProperty]

@@ -1,16 +1,28 @@
+@inject BSUIR_Savchenko.UI.Services.AvatarStorage Avatars
 <div class="user-info">
     @await Component.InvokeAsync("Cart")
-    <details class="dropdown">
-        <summary>
-            user@gmail.com
-            <img src="~/Images/avatar.svg" alt="Аватар" width="30" height="30" />
-        </summary>
-        <div class="dropdown-body">
-            <img src="~/Images/avatar.svg" alt="" width="52" height="52" />
-            <p>user@gmail.com</p>
-            <form asp-area="" asp-controller="Account" asp-action="LogOut" method="post">
-                <button type="submit">Logout</button>
-            </form>
-        </div>
-    </details>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        var username = User.FindFirst("preferred_username")?.Value ?? User.Identity.Name ?? "Пользователь";
+        var avatar = Avatars.ImageUrl(User.FindFirst("sub")?.Value);
+        <details class="dropdown">
+            <summary>
+                @username
+                <img src="@avatar" alt="Аватар" width="30" height="30" />
+            </summary>
+            <div class="dropdown-body">
+                <img src="@avatar" alt="" width="52" height="52" />
+                <p>@username</p>
+                <a asp-area="" asp-controller="Account" asp-action="Profile">Мой профиль</a>
+                <form asp-area="" asp-controller="Account" asp-action="LogOut" method="post">
+                    <button type="submit">Logout</button>
+                </form>
+            </div>
+        </details>
+    }
+    else
+    {
+        <a asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+        <a asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+    }
 </div>

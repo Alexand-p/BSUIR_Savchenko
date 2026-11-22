@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using BSUIR_Savchenko.Domain.Entities;
 using BSUIR_Savchenko.UI.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BSUIR_Savchenko.UI.Areas.Admin.Pages;
 
+[Authorize(Roles = "POWER-USER")]
 public class IndexModel(IProductService products) : PageModel
 {
     public List<Book> Books { get; private set; } = new();

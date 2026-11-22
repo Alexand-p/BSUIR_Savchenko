@@ -1,0 +1,15 @@
+@inject BSUIR_Savchenko.UI.Services.AvatarStorage Avatars
+@{
+    ViewData["Title"] = "Профиль";
+    var username = User.FindFirst("preferred_username")?.Value ?? User.Identity?.Name ?? "Пользователь";
+    var userId = User.FindFirst("sub")?.Value;
+}
+<h1>Профиль пользователя</h1>
+<p><strong>@username</strong></p>
+<img src="@Avatars.ImageUrl(userId)" alt="Ваш аватар" class="profile-avatar" />
+<form asp-area="" asp-controller="Account" asp-action="Profile" method="post" enctype="multipart/form-data" class="form">
+    <div asp-validation-summary="All" class="error"></div>
+    <label for="avatar">Аватар (PNG, JPEG или WebP, до 2 МБ)</label>
+    <input type="file" name="avatar" id="avatar" accept="image/png,image/jpeg,image/webp" required />
+    <button type="submit">Сохранить аватар</button>
+</form>

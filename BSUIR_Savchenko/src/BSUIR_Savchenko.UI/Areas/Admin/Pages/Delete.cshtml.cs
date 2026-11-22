@@ -1,10 +1,12 @@
 using BSUIR_Savchenko.Domain.Entities;
 using BSUIR_Savchenko.UI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BSUIR_Savchenko.UI.Areas.Admin.Pages;
 
+[Authorize(Roles = "POWER-USER")]
 public class DeleteModel(IProductService products) : PageModel
 {
     public Book Book { get; private set; } = new();

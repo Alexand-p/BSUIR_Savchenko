@@ -3,6 +3,7 @@ using BSUIR_Savchenko.API.Models;
 using BSUIR_Savchenko.API.Services;
 using BSUIR_Savchenko.Domain.Entities;
 using BSUIR_Savchenko.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,6 +51,7 @@ public class BooksController(AppDbContext db, ImageStorage images) : ControllerB
         return Ok(ResponseData<Book>.Success(item));
     }
 
+    [Authorize(Roles = "POWER-USER")]
     [HttpPost]
     [Consumes("multipart/form-data")]
     public async Task<ActionResult<ResponseData<Book>>> Create([FromForm] BookForm form)
@@ -80,6 +82,7 @@ public class BooksController(AppDbContext db, ImageStorage images) : ControllerB
         return CreatedAtAction(nameof(GetById), new { id = book.Id }, ResponseData<Book>.Success(book));
     }
 
+    [Authorize(Roles = "POWER-USER")]
     [HttpPut("{id:int}")]
     [Consumes("multipart/form-data")]
     public async Task<ActionResult<ResponseData<Book>>> Update(int id, [FromForm] BookForm form)
@@ -113,6 +116,7 @@ public class BooksController(AppDbContext db, ImageStorage images) : ControllerB
         return Ok(ResponseData<Book>.Success(book));
     }
 
+    [Authorize(Roles = "POWER-USER")]
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<ResponseData<bool>>> Delete(int id)
     {

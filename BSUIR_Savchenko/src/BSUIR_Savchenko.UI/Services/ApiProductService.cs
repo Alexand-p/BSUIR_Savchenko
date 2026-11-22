@@ -1,13 +1,15 @@
 using System.Globalization;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Authentication;
 using BSUIR_Savchenko.Domain.Entities;
 using BSUIR_Savchenko.Domain.Models;
 using BSUIR_Savchenko.UI.Models;
 
 namespace BSUIR_Savchenko.UI.Services;
 
-public class ApiProductService(HttpClient client) : IProductService
+public class ApiProductService(HttpClient client, IHttpContextAccessor httpContext) : IProductService
 {
     public string ImageUrl(Book book)
     {
@@ -20,26 +22,26 @@ public class ApiProductService(HttpClient client) : IProductService
         var path = $"api/books?pageNo={pageNo}";
         if (!string.IsNullOrWhiteSpace(categoryNormalizedName))
             path += $"&categoryNormalizedName={Uri.EscapeDataString(categoryNormalizedName)}";
-        return SendAsync<ListModel<Book>>(() => client.GetAsync(path));
+        return SendAsync<ListModel<Book>>(new HttpRequestMessage(HttpMethod.Get, path));
     }
 
     public Task<ResponseData<Book>> GetProductByIdAsync(int id) =>
-        SendAsync<Book>(() => client.GetAsync($"api/books/{id}"));
+        SendAsync<Book>(new HttpRequestMessage(HttpMethod.Get, $"api/books/{id}"));
 
-    public async Task<ResponseData<Book>> CreateProductAsync(BookFormModel book, IFormFile? image)
-    {
-        using var form = BuildForm(book, image);
-        return await SendAsync<Book>(() => client.PostAsync("api/books", form));
-    }
+    public Task<ResponseData<Book>> CreateProductAsync(BookFormModel book, IFormFile? image) =>
+        SendAsync<Book>(new HttpRequestMessage(HttpMethod.Post, "api/books")
+        {
+            Content = BuildForm(book, image)
+        }, true);
 
-    public async Task<ResponseData<Book>> UpdateProductAsync(int id, BookFormModel book, IFormFile? image)
-    {
-        using var form = BuildForm(book, image);
-        return await SendAsync<Book>(() => client.PutAsync($"api/books/{id}", form));
-    }
+    public Task<ResponseData<Book>> UpdateProductAsync(int id, BookFormModel book, IFormFile? image) =>
+        SendAsync<Book>(new HttpRequestMessage(HttpMethod.Put, $"api/books/{id}")
+        {
+            Content = BuildForm(book, image)
+        }, true);
 
     public Task<ResponseData<bool>> DeleteProductAsync(int id) =>
-        SendAsync<bool>(() => client.DeleteAsync($"api/books/{id}"));
+        SendAsync<bool>(new HttpRequestMessage(HttpMethod.Delete, $"api/books/{id}"), true);
 
     private static MultipartFormDataContent BuildForm(BookFormModel book, IFormFile? image)
     {
@@ -48,7 +50,6 @@ public class ApiProductService(HttpClient client) : IProductService
         content.Add(new StringContent(book.Description), "Description");
         content.Add(new StringContent(book.CategoryId.ToString(CultureInfo.InvariantCulture)), "CategoryId");
         content.Add(new StringContent(book.Price.ToString(CultureInfo.InvariantCulture)), "Price");
-
         if (image is not null && image.Length > 0)
         {
             var fileContent = new StreamContent(image.OpenReadStream());
@@ -58,27 +59,46 @@ public class ApiProductService(HttpClient client) : IProductService
         return content;
     }
 
-    private async Task<ResponseData<T>> SendAsync<T>(Func<Task<HttpResponseMessage>> request)
+    private async Task<ResponseData<T>> SendAsync<T>(HttpRequestMessage request, bool requiresToken = false)
     {
-        try
+        using (request)
         {
-            using var response = await request();
-            var data = await response.Content.ReadFromJsonAsync<ResponseData<T>>();
-            if (!response.IsSuccessStatusCode)
-                return ResponseData<T>.Error(data?.ErrorMessage ?? $"Ошибка API ({(int)response.StatusCode}).");
-            return data ?? ResponseData<T>.Error("Пустой ответ API.");
-        }
-        catch (HttpRequestException)
-        {
-            return ResponseData<T>.Error("API недоступен. Запустите проект BSUIR_Savchenko.API.");
-        }
-        catch (TaskCanceledException)
-        {
-            return ResponseData<T>.Error("Превышено время ожидания API.");
-        }
-        catch (System.Text.Json.JsonException)
-        {
-            return ResponseData<T>.Error("Сервис API вернул некорректные данные.");
+            try
+            {
+                if (requiresToken)
+                {
+                    var token = await (httpContext.HttpContext?.GetTokenAsync("access_token")
+                        ?? Task.FromResult<string?>(null));
+                    if (string.IsNullOrWhiteSpace(token))
+                        return ResponseData<T>.Error("Для изменения данных войдите в учётную запись.");
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+                using var response = await client.SendAsync(request);
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    return ResponseData<T>.Error("Срок действия входа истёк. Войдите повторно.");
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                    return ResponseData<T>.Error("Недостаточно прав: требуется роль POWER-USER.");
+                ResponseData<T>? payload;
+                try
+                {
+                    payload = await response.Content.ReadFromJsonAsync<ResponseData<T>>();
+                }
+                catch (System.Text.Json.JsonException)
+                {
+                    return ResponseData<T>.Error($"Некорректный ответ API ({(int)response.StatusCode}).");
+                }
+                if (!response.IsSuccessStatusCode)
+                    return ResponseData<T>.Error(payload?.ErrorMessage ?? $"Ошибка API ({(int)response.StatusCode}).");
+                return payload ?? ResponseData<T>.Error("Пустой ответ API.");
+            }
+            catch (HttpRequestException)
+            {
+                return ResponseData<T>.Error("API недоступен. Запустите проект BSUIR_Savchenko.API.");
+            }
+            catch (TaskCanceledException)
+            {
+                return ResponseData<T>.Error("Превышено время ожидания API.");
+            }
         }
     }
 }

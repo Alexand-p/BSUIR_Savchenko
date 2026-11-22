@@ -60,3 +60,6 @@ h1 { margin-bottom: 24px; }
 .danger-button { background: #b33131 !important; }
 @media(max-width: 800px) { .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media(max-width: 530px) { .catalog-grid { grid-template-columns: 1fr; } .page-heading { align-items: start; flex-direction: column; } }
+
+.profile-avatar { width: 120px; height: 120px; object-fit: cover; background: #eef1f3; border-radius: 50%; display: block; margin: 18px 0; }
+.dropdown-body a { display: block; margin-bottom: 12px; color: #1b668d; }

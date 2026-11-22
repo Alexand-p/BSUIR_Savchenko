@@ -6,3 +6,7 @@
 **/App_Data/*.db-wal
 *.user
 **/App_Data/*.db-journal
+
+**/logs/
+**/user-avatars/
+keycloak/runtime/
