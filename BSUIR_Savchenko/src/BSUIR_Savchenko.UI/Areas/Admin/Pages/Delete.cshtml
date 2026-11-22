@@ -1,0 +1,12 @@
+@page "{id:int}"
+@model BSUIR_Savchenko.UI.Areas.Admin.Pages.DeleteModel
+@{
+    ViewData["Title"] = "Удаление книги";
+}
+<h1>Удаление книги</h1>
+<p>Удалить книгу <strong>@Model.Book.Name</strong>?</p>
+<form method="post" class="form-actions">
+    <div asp-validation-summary="All" class="error"></div>
+    <button type="submit" class="danger-button">Удалить</button>
+    <a asp-page="/Index">Отмена</a>
+</form>

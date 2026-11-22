@@ -1,5 +1,8 @@
 **/bin/
 **/obj/
 .vs/
+**/App_Data/*.db
+**/App_Data/*.db-shm
+**/App_Data/*.db-wal
 *.user
-*.suo
+**/App_Data/*.db-journal

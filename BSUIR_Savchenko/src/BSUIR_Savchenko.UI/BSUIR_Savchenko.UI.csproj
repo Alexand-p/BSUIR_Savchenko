@@ -5,4 +5,7 @@
     <Nullable>enable</Nullable>
     <RootNamespace>BSUIR_Savchenko.UI</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BSUIR_Savchenko.Domain\BSUIR_Savchenko.Domain.csproj" />
+  </ItemGroup>
 </Project>

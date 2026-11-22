@@ -1,0 +1,52 @@
+@model CatalogViewModel
+@{
+    ViewData["Title"] = "Каталог книг";
+}
+<h1>Каталог книг</h1>
+
+<form asp-area="" asp-controller="Product" asp-action="Index" method="get" class="catalog-filter">
+    <label for="category">Категория</label>
+    <select name="categoryNormalizedName" id="category">
+        <option value="">Все категории</option>
+        @foreach (var category in Model.Categories)
+        {
+            <option value="@category.NormalizedName" selected="@(Model.CategoryNormalizedName == category.NormalizedName)">@category.Name</option>
+        }
+    </select>
+    <button type="submit">Показать</button>
+</form>
+
+@if (!string.IsNullOrWhiteSpace(Model.Error))
+{
+    <p class="error">@Model.Error</p>
+}
+else if (Model.Books.Count == 0)
+{
+    <p>В этой категории пока нет книг.</p>
+}
+else
+{
+    <div class="catalog-grid">
+        @foreach (var book in Model.Books)
+        {
+            <article class="book-card">
+                <img src="@Model.ImageUrl(book)" alt="Обложка книги @book.Name" />
+                <div class="book-info">
+                    <p class="book-category">@(book.Category?.Name)</p>
+                    <h2>@book.Name</h2>
+                    <p>@book.Description</p>
+                    <strong>@(book.Price.ToString("N2")) руб.</strong>
+                </div>
+            </article>
+        }
+    </div>
+    <nav class="pagination" aria-label="Страницы каталога">
+        @for (int page = 1; page <= Model.TotalPages; page++)
+        {
+            <a class="@(page == Model.CurrentPage ? "active" : "")"
+               asp-area="" asp-controller="Product" asp-action="Index"
+               asp-route-categoryNormalizedName="@Model.CategoryNormalizedName"
+               asp-route-pageNo="@(page)">@(page)</a>
+        }
+    </nav>
+}
