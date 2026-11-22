@@ -1,0 +1,4 @@
+@model CartSummaryModel
+<a class="cart" asp-area="" asp-controller="Cart" asp-action="Index">
+    @Model.TotalPrice.ToString("N2") руб. <i class="bi bi-cart3"></i> (@Model.TotalQuantity)
+</a>

@@ -1,0 +1,16 @@
+<div class="user-info">
+    @await Component.InvokeAsync("Cart")
+    <details class="dropdown">
+        <summary>
+            user@gmail.com
+            <img src="~/Images/avatar.svg" alt="Аватар" width="30" height="30" />
+        </summary>
+        <div class="dropdown-body">
+            <img src="~/Images/avatar.svg" alt="" width="52" height="52" />
+            <p>user@gmail.com</p>
+            <form asp-area="" asp-controller="Account" asp-action="LogOut" method="post">
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+    </details>
+</div>

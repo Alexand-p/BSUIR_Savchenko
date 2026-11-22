@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - СППР</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <div class="container header-row">
+            <partial name="_MenuPartial" />
+            <partial name="_UserInfoPartial" />
+        </div>
+    </header>
+    <main class="container">
+        @if (TempData["Message"] is string message)
+        {
+            <p class="message">@message</p>
+        }
+        @RenderBody()
+    </main>
+    <footer>
+        <div class="container footer-icons">
+            <a href="https://facebook.com" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="https://vk.com" aria-label="ВКонтакте"><i class="bi bi-people-fill"></i></a>
+            <a href="https://x.com" aria-label="X"><i class="bi bi-twitter-x"></i></a>
+        </div>
+    </footer>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

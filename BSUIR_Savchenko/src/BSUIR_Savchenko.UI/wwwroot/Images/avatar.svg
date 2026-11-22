@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="avatarTitle">
+  <title id="avatarTitle">Аватар пользователя</title>
+  <circle cx="48" cy="48" r="47" fill="#e9edf3" stroke="#b9c3d1" stroke-width="2"/>
+  <circle cx="48" cy="36" r="17" fill="#667b94"/>
+  <path d="M16 80c4-18 16-27 32-27s28 9 32 27" fill="#667b94"/>
+</svg>
