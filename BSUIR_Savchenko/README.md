@@ -16,7 +16,7 @@ ASP.NET Core MVC / Razor Pages / REST API / Entity Framework Core / SQLite / Key
 .\scripts\setup-keycloak.ps1
 ```
 
-Скрипт создаёт локальные секреты, сохраняет OIDC client secret через `dotnet user-secrets`, запускает Keycloak на `http://localhost:8180` и печатает случайный пароль пользователя `poweruser` с ролью `POWER-USER`. Секреты, аватары и журналы игнорируются Git. Не загружайте `keycloak/runtime` в репозиторий.
+Скрипт создаёт локальные секреты, сохраняет OIDC client secret через `dotnet user-secrets`, запускает Keycloak на `http://localhost:8080` и печатает случайный пароль пользователя `poweruser` с ролью `POWER-USER`. Секреты, аватары и журналы игнорируются Git. Не загружайте `keycloak/runtime` в репозиторий.
 
 При первом запуске контейнер может загружать образ. Realm импортируется только если он ещё не существует. Для сохранения пользователей не удаляйте том Docker `keycloak-db`. При повторном запуске используется прежний client secret.
 
@@ -42,7 +42,7 @@ dotnet run --project .\src\BSUIR_Savchenko.UI
 
 Сайты:
 
-- Keycloak: http://localhost:8180
+- Keycloak: http://localhost:8080
 - API: http://localhost:5101/api/books
 - UI: http://localhost:5000
 
@@ -90,3 +90,18 @@ git diff --cached --stat
 git commit -m "Add IPR1 Keycloak authentication and Serilog middleware"
 git push origin main
 ```
+
+
+## ИПР № 2 — Blazor
+
+Вариант 1: интерактивный каталог книг, получающий данные из API.
+
+Запуск при работающем API на http://localhost:5101:
+
+```powershell
+dotnet run --project .\src\BSUIR_Savchenko.Blazor
+```
+
+Каталог: http://localhost:5200/catalog. В MVC-меню добавлена ссылка «Каталог Blazor».
+
+Компоненты: `CategorySelector`, `Pager`, `ProductList`, `ProductDetails`; состояние и HTTP-запросы — `DataService`.

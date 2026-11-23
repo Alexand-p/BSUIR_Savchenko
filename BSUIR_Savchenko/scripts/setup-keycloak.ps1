@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Stop"
 $root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $runtime = Join-Path $root "keycloak\runtime"
 $settingsPath = Join-Path $runtime "local-settings.json"
@@ -43,7 +43,7 @@ try {
     Pop-Location
 }
 
-Write-Host "Keycloak: http://localhost:8180" -ForegroundColor Green
+Write-Host "Keycloak: http://localhost:8080" -ForegroundColor Green
 Write-Host "Realm: bsuir"
 Write-Host "Учебный пользователь: poweruser"
 Write-Host "Пароль: $($settings.PowerUserPassword)"

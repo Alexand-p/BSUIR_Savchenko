@@ -1,0 +1,26 @@
+@implements IDisposable
+
+@if (Service.Products.Count == 0)
+{
+    <p>В этой категории пока нет книг.</p>
+}
+else
+{
+    <div class="book-list">
+        @foreach (var book in Service.Products)
+        {
+            <div class="book-row" @key="book.Id">
+                <span class="book-name">@book.Name</span>
+                <button type="button" @onclick="() => ProductSelected.InvokeAsync(book.Id)">Подробно</button>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [CascadingParameter] public DataService Service { get; set; } = default!;
+    [Parameter] public EventCallback<int> ProductSelected { get; set; }
+    protected override void OnInitialized() => Service.Changed += Refresh;
+    private void Refresh() => _ = InvokeAsync(StateHasChanged);
+    public void Dispose() => Service.Changed -= Refresh;
+}

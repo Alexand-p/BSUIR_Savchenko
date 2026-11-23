@@ -2,6 +2,7 @@
     <a class="brand" asp-area="" asp-controller="Home" asp-action="Index">СППР</a>
     <a asp-area="" asp-controller="Home" asp-action="Index">КР1</a>
     <a asp-area="" asp-controller="Product" asp-action="Index">Каталог</a>
+    <a href="http://localhost:5200/catalog">Каталог Blazor</a>
     @if (User.IsInRole("POWER-USER"))
     {
         <a asp-area="Admin" asp-page="/Index">Администрирование</a>

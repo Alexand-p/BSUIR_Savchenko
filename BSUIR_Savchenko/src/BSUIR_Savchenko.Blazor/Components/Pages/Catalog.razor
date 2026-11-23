@@ -1,0 +1,51 @@
+@page "/catalog"
+@rendermode InteractiveServer
+@implements IDisposable
+@inject DataService DataService
+
+<PageTitle>Каталог книг — Blazor</PageTitle>
+<h1>Каталог книг</h1>
+<p class="intro">Данные загружаются из REST API. Выберите категорию, страницу или книгу.</p>
+
+<CascadingValue Value="DataService" IsFixed="true">
+    <CategorySelector />
+    @if (DataService.Loading)
+    {
+        <p role="status">Загрузка книг...</p>
+    }
+    else if (!string.IsNullOrEmpty(DataService.Error))
+    {
+        <p class="error" role="alert">@DataService.Error</p>
+    }
+    else
+    {
+        <ProductList ProductSelected="SelectProduct" />
+        <Pager />
+        <ProductDetails SelectedProduct="selectedProduct" ApiBaseUrl="@DataService.ApiBaseUrl" />
+    }
+</CascadingValue>
+
+@code {
+    private Book? selectedProduct;
+
+    protected override async Task OnInitializedAsync()
+    {
+        DataService.Changed += OnDataChanged;
+        await DataService.InitializeAsync();
+    }
+
+    private Task SelectProduct(int id)
+    {
+        selectedProduct = DataService.Products.FirstOrDefault(x => x.Id == id);
+        return Task.CompletedTask;
+    }
+
+    private void OnDataChanged()
+    {
+        if (selectedProduct is not null && DataService.Products.All(x => x.Id != selectedProduct.Id))
+            selectedProduct = null;
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose() => DataService.Changed -= OnDataChanged;
+}

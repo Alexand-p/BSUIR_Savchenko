@@ -1,0 +1,23 @@
+@if (SelectedProduct is not null)
+{
+    <section class="details" aria-label="Подробная информация">
+        <img src="@GetImageUrl()" alt="Обложка: @SelectedProduct.Name" />
+        <div>
+            <h2>@SelectedProduct.Name</h2>
+            <p><strong>Категория:</strong> @(SelectedProduct.Category?.Name ?? "Не указана")</p>
+            <p>@SelectedProduct.Description</p>
+            <p class="price">@SelectedProduct.Price.ToString("N2") руб.</p>
+        </div>
+    </section>
+}
+
+@code {
+    [Parameter] public Book? SelectedProduct { get; set; }
+    [Parameter] public string ApiBaseUrl { get; set; } = string.Empty;
+
+    private string GetImageUrl()
+    {
+        var path = SelectedProduct?.Image ?? "/images/placeholder.svg";
+        return new Uri(new Uri(ApiBaseUrl), path.TrimStart('/')).ToString();
+    }
+}

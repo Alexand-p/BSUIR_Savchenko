@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BSUIR_Savchenko.API", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BSUIR_Savchenko.Domain", "src\BSUIR_Savchenko.Domain\BSUIR_Savchenko.Domain.csproj", "{BD629581-8B89-452B-A505-498C04F158AE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BSUIR_Savchenko.Blazor", "src\BSUIR_Savchenko.Blazor\BSUIR_Savchenko.Blazor.csproj", "{8206F213-1AA3-45D0-87AA-B17174DD0DB0}"
+EndProject
 Global
     GlobalSection(SolutionConfigurationPlatforms) = preSolution
         Debug|Any CPU = Debug|Any CPU
@@ -25,5 +27,9 @@ Global
         {BD629581-8B89-452B-A505-498C04F158AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
         {BD629581-8B89-452B-A505-498C04F158AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
         {BD629581-8B89-452B-A505-498C04F158AE}.Release|Any CPU.Build.0 = Release|Any CPU
+        {8206F213-1AA3-45D0-87AA-B17174DD0DB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {8206F213-1AA3-45D0-87AA-B17174DD0DB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {8206F213-1AA3-45D0-87AA-B17174DD0DB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {8206F213-1AA3-45D0-87AA-B17174DD0DB0}.Release|Any CPU.Build.0 = Release|Any CPU
     EndGlobalSection
 EndGlobal

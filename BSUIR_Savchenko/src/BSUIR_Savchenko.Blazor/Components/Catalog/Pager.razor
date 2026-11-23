@@ -1,0 +1,22 @@
+@implements IDisposable
+
+@if (Service.TotalPages > 1)
+{
+    <nav class="pager" aria-label="Страницы каталога">
+        @for (var number = 1; number <= Service.TotalPages; number++)
+        {
+            var page = number;
+            <button type="button" class="@(page == Service.CurrentPage ? "current" : "")"
+                    aria-current="@(page == Service.CurrentPage ? "page" : null)"
+                    disabled="@Service.Loading"
+                    @onclick="() => Service.SelectPageAsync(page)">@(page)</button>
+        }
+    </nav>
+}
+
+@code {
+    [CascadingParameter] public DataService Service { get; set; } = default!;
+    protected override void OnInitialized() => Service.Changed += Refresh;
+    private void Refresh() => _ = InvokeAsync(StateHasChanged);
+    public void Dispose() => Service.Changed -= Refresh;
+}

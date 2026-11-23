@@ -1,0 +1,24 @@
+@implements IDisposable
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="filter-row">
+    <label for="category">Категория</label>
+    <select id="category" value="@Service.CategoryNormalizedName" @onchange="OnChanged">
+        <option value="">Все категории</option>
+        @foreach (var category in Service.Categories)
+        {
+            <option value="@category.NormalizedName">@category.Name</option>
+        }
+    </select>
+</div>
+
+@code {
+    [CascadingParameter] public DataService Service { get; set; } = default!;
+
+    private async Task OnChanged(ChangeEventArgs args) =>
+        await Service.SelectCategoryAsync(args.Value?.ToString());
+
+    protected override void OnInitialized() => Service.Changed += Refresh;
+    private void Refresh() => _ = InvokeAsync(StateHasChanged);
+    public void Dispose() => Service.Changed -= Refresh;
+}
